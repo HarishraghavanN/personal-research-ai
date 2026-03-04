@@ -5,10 +5,110 @@ from src.vector_store import add_documents_to_store, get_vector_store
 from src.rag_pipeline import build_rag_chain
 from langchain_core.messages import HumanMessage, AIMessage
 
-st.set_page_config(page_title="Personal Research AI", layout="wide")
-st.title("📚 Personal Research AI")
-st.write("Upload PDFs and ask questions based on their content.")
+st.set_page_config(page_title="Personal Research AI", layout="wide", page_icon="✨")
 
+# --- Custom Premium CSS ---
+st.markdown("""
+<style>
+    /* Main background */
+    .stApp {
+        background: radial-gradient(circle at top left, #1e2030, #0f111a);
+        color: #e2e8f0;
+        font-family: 'Inter', sans-serif;
+    }
+    
+    /* Headers */
+    h1, h2, h3 {
+        color: #ffffff;
+        font-weight: 700 !important;
+        letter-spacing: -0.02em;
+    }
+    h1 {
+        background: linear-gradient(90deg, #d8b4fe, #818cf8);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 0.5rem;
+    }
+    
+    /* Top bar fix */
+    header {
+        background: transparent !important;
+    }
+    
+    /* Sidebar */
+    .css-1544g2n {
+        background: rgba(20, 24, 39, 0.7);
+        backdrop-filter: blur(12px);
+        border-right: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    /* Buttons */
+    .stButton>button {
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 14px 0 rgba(139, 92, 246, 0.39);
+    }
+    .stButton>button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
+    }
+    
+    /* Inputs */
+    .stTextInput>div>div>input, .stSelectbox>div>div>select {
+        background-color: rgba(30, 41, 59, 0.7) !important;
+        border: 1px solid rgba(255,255,255,0.1) !important;
+        border-radius: 8px !important;
+        color: white !important;
+        box-shadow: none !important;
+    }
+    .stTextInput>div>div>input:focus {
+        border-color: #8b5cf6 !important;
+        box-shadow: 0 0 0 1px #8b5cf6 !important;
+    }
+    
+    /* Chat bubbles */
+    .stChatMessage {
+        background-color: rgba(30, 41, 59, 0.4);
+        border: 1px solid rgba(255,255,255,0.05);
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+    /* User message specific styling */
+    .stChatMessage[data-testid="chat-message-user"] {
+        background-color: rgba(99, 102, 241, 0.1);
+        border: 1px solid rgba(99, 102, 241, 0.2);
+    }
+    
+    /* Chat input area */
+    .stChatInputContainer {
+        border-radius: 12px !important;
+        border: 1px solid rgba(255,255,255,0.1) !important;
+        background-color: rgba(30, 41, 59, 0.9) !important;
+        backdrop-filter: blur(10px);
+    }
+    
+    /* Expanders */
+    .streamlit-expanderHeader {
+        background-color: rgba(30, 41, 59, 0.5) !important;
+        border-radius: 8px;
+    }
+    div[data-testid="stExpander"] {
+        border: 1px solid rgba(255,255,255,0.05);
+        border-radius: 8px;
+        background-color: rgba(15, 23, 42, 0.3);
+    }
+</style>
+""", unsafe_allow_html=True)
+
+st.title("✨ Nexus AI Research Assistant")
+st.markdown("<p style='color: #94a3b8; font-size: 1.1rem;'>Upload documents, discover insights, and synthesize knowledge effortlessly.</p>", unsafe_allow_html=True)
+st.markdown("---")
 # --- Sidebar Configuration ---
 with st.sidebar:
     st.header("⚙️ Configuration")
