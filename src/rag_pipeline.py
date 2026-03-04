@@ -10,7 +10,7 @@ from langchain_core.prompts import MessagesPlaceholder
 def get_llm():
     # Attempt to load LLM based on environment variables
     if os.getenv("GOOGLE_API_KEY"):
-        return ChatGoogleGenerativeAI(model="gemini-1.5-flash", convert_system_message_to_human=True)
+        return ChatGoogleGenerativeAI(model="gemini-1.0-pro", convert_system_message_to_human=True)
     elif os.getenv("OPENAI_API_KEY"):
         return ChatOpenAI(model="gpt-3.5-turbo")
     elif os.getenv("ANTHROPIC_API_KEY"):
