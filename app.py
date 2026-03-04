@@ -7,132 +7,139 @@ from langchain_core.messages import HumanMessage, AIMessage
 
 st.set_page_config(page_title="Nexus", layout="wide")
 
-# --- Custom Minimalist CSS ---
+# --- Custom Dark Sleek CSS ---
 st.markdown("""
 <style>
-    /* Minimalist typography & background */
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
     
     .stApp {
-        background-color: #fafafa;
-        color: #1a1a1a;
-        font-family: 'Inter', sans-serif;
+        background-color: #050505;
+        background-image: radial-gradient(circle at 50% 0%, #1a1a2e 0%, #050505 50%);
+        color: #e2e8f0;
+        font-family: 'Outfit', sans-serif;
     }
     
-    /* Clean Headers */
+    /* Sleek Typography */
     h1, h2, h3 {
-        color: #111111;
-        font-weight: 500 !important;
-        letter-spacing: -0.01em;
+        font-family: 'Outfit', sans-serif;
+        color: #ffffff;
+        font-weight: 600 !important;
+        letter-spacing: -0.02em;
     }
     h1 {
-        font-size: 2.5rem;
-        margin-bottom: 0.2rem;
+        font-size: 3rem;
+        background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 0px;
     }
     
-    /* Hide default Streamlit elements */
-    header { visibility: hidden; }
+    /* Top bar fix */
+    header { background: transparent !important; }
     #MainMenu { visibility: hidden; }
     footer { visibility: hidden; }
     
     /* Sleek Sidebar */
     .css-1544g2n, [data-testid="stSidebar"] {
-        background-color: #ffffff;
-        border-right: 1px solid #eaeaea;
+        background-color: rgba(10, 10, 15, 0.8) !important;
+        backdrop-filter: blur(20px);
+        border-right: 1px solid rgba(255, 255, 255, 0.05);
     }
     
     hr {
-        border-top: 1px solid #eaeaea;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
         margin: 2rem 0;
     }
     
-    /* Monochrome Buttons */
+    /* Eye-Catching Buttons */
     .stButton>button {
-        background-color: #ffffff;
-        color: #111111;
-        border: 1px solid #d4d4d4;
-        border-radius: 4px;
-        padding: 0.5rem 1rem;
-        font-weight: 400;
-        font-size: 0.9rem;
-        transition: all 0.2s ease;
-        box-shadow: none;
+        background: linear-gradient(90deg, #00c6ff 0%, #0072ff 100%);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 0.6rem 1.5rem;
+        font-weight: 500;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        box-shadow: 0 4px 15px rgba(0, 114, 255, 0.3);
     }
     .stButton>button:hover {
-        border-color: #111111;
-        color: #111111;
-        background-color: #f5f5f5;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 25px rgba(0, 198, 255, 0.5);
     }
     .stButton>button:active {
-        background-color: #e5e5e5;
+        transform: translateY(1px);
     }
     
-    /* Clean Inputs */
+    /* Dark Glass Inputs */
     .stTextInput>div>div>input, .stSelectbox>div>div>select, [data-testid="stFileUploader"] {
-        background-color: #ffffff !important;
-        border: 1px solid #e0e0e0 !important;
-        border-radius: 4px !important;
-        color: #111111 !important;
+        background-color: rgba(255, 255, 255, 0.03) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 12px !important;
+        color: white !important;
         box-shadow: none !important;
-        font-size: 0.95rem;
     }
     .stTextInput>div>div>input:focus, .stSelectbox>div>div>select:focus {
-        border-color: #111111 !important;
+        border-color: #00f2fe !important;
+        box-shadow: 0 0 0 1px #00f2fe !important;
+        background-color: rgba(255, 255, 255, 0.06) !important;
     }
     
-    /* Refined Chat Bubbles */
+    /* Floating Chat Bubbles */
     .stChatMessage {
-        background-color: #ffffff;
-        border: 1px solid #eaeaea;
-        border-radius: 6px;
+        background-color: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.04);
+        border-radius: 16px;
         padding: 1.25rem;
         margin-bottom: 1rem;
-        font-size: 0.95rem;
-        line-height: 1.6;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(4px);
     }
     
-    /* User message subtle differentiation */
+    /* User message neon accent */
     .stChatMessage[data-testid="chat-message-user"] {
-        background-color: #fcfcfc;
-        border-left: 2px solid #a3a3a3;
+        background-color: rgba(0, 242, 254, 0.05);
+        border-left: 3px solid #00f2fe;
     }
     
-    /* Assistant message differentiation */
+    /* Assistant message */
     .stChatMessage[data-testid="chat-message-assistant"] {
-        border-left: 2px solid #111111;
+        border-left: 3px solid #8e2de2;
     }
     
-    /* Chat input area */
+    /* Docked Chat Input */
     .stChatInputContainer {
-        border-radius: 6px !important;
-        border: 1px solid #d4d4d4 !important;
-        background-color: #ffffff !important;
-        box-shadow: 0 -4px 20px rgba(0,0,0,0.02) !important;
+        border-radius: 50px !important;
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        background-color: rgba(10, 10, 10, 0.9) !important;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.5) !important;
+        padding: 4px 10px !important;
     }
     
-    /* Clean Expanders */
+    /* Styled Expanders */
     .streamlit-expanderHeader {
-        background-color: #f9f9f9 !important;
-        border-radius: 4px;
-        font-weight: 500;
-        color: #333;
+        background-color: rgba(255, 255, 255, 0.03) !important;
+        border-radius: 12px;
+        color: #a0aec0;
     }
     div[data-testid="stExpander"] {
-        border: 1px solid #ebebeb;
-        border-radius: 4px;
-        background-color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        background-color: transparent;
     }
     
-    /* Subtle text */
-    .stMarkdown p {
-        color: #404040;
+    /* Intro text */
+    .intro-text {
+        font-size: 1.15rem;
+        color: #94a3b8;
+        font-weight: 300;
+        margin-top: -10px;
+        margin-bottom: 2rem;
     }
 </style>
 """, unsafe_allow_html=True)
 
-st.title("Nexus")
-st.markdown("<p style='color: #666666; font-size: 1.05rem; font-weight: 300; margin-bottom: 2rem;'>Document analysis and synthesis.</p>", unsafe_allow_html=True)
+st.title("Nexus AI")
+st.markdown("<p class='intro-text'>Seamless synthesis and retrieval.</p>", unsafe_allow_html=True)
 
 # --- Sidebar Configuration ---
 with st.sidebar:
