@@ -12,6 +12,12 @@ st.write("Upload PDFs and ask questions based on their content.")
 # --- Sidebar Configuration ---
 with st.sidebar:
     st.header("⚙️ Configuration")
+    try:
+        import langchain_google_genai
+        st.caption(f"SDK Version: {langchain_google_genai.__version__}")
+    except:
+        pass
+        
     llm_provider = st.selectbox("LLM Provider", ["Google Gemini", "OpenAI", "Anthropic Claude"])
     
     # Store API key in session state for UI check, but also set env var for Langchain
@@ -28,6 +34,24 @@ with st.sidebar:
         api_key = st.text_input("Anthropic API Key", type="password")
         if api_key:
             os.environ["ANTHROPIC_API_KEY"] = api_key
+            
+    # --- Diagnostics ---
+    if st.button("🛠️ Run API Diagnostics"):
+        if not api_key:
+            st.error("Please enter your API Key first.")
+        elif llm_provider == "Google Gemini":
+            import requests
+            try:
+                # Ask Google directly which models this specific API key is allowed to use
+                url = f"https://generativelanguage.googleapis.com/v1beta/models?key={api_key}"
+                res = requests.get(url).json()
+                if "models" in res:
+                    valid_models = [m['name'].replace('models/', '') for m in res['models'] if 'generateContent' in m.get('supportedGenerationMethods', [])]
+                    st.success(f"**Your API key has access to these generating models:**\n" + "\n".join([f"- `{m}`" for m in valid_models]))
+                else:
+                    st.error(f"API Error: {res}")
+            except Exception as e:
+                st.error(f"Failed to reach Google API: {e}")
             
     st.header("📄 Document Upload")
     uploaded_files = st.file_uploader("Upload research PDFs", type="pdf", accept_multiple_files=True)

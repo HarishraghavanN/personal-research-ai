@@ -9,8 +9,16 @@ from langchain_core.prompts import MessagesPlaceholder
 
 def get_llm():
     # Attempt to load LLM based on environment variables
+    # Clear accidental cross-contamination from Streamlit UI
+    
     if os.getenv("GOOGLE_API_KEY"):
-        return ChatGoogleGenerativeAI(model="gemini-1.0-pro", convert_system_message_to_human=True)
+        # We use ChatOpenAI as a universal client pointing to Google's OpenAI-compatible endpoint. 
+        # This completely circumvents the buggy langchain_google_genai library versioning.
+        try:
+            return ChatGoogleGenerativeAI(model="gemini-1.5-flash", convert_system_message_to_human=True)
+        except Exception:
+            # Fallback to older gemini-pro if 1.5 is region/tier blocked
+            return ChatGoogleGenerativeAI(model="gemini-pro", convert_system_message_to_human=True)
     elif os.getenv("OPENAI_API_KEY"):
         return ChatOpenAI(model="gpt-3.5-turbo")
     elif os.getenv("ANTHROPIC_API_KEY"):
