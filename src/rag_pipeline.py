@@ -12,13 +12,11 @@ def get_llm():
     # Clear accidental cross-contamination from Streamlit UI
     
     if os.getenv("GOOGLE_API_KEY"):
-        # We use ChatOpenAI as a universal client pointing to Google's OpenAI-compatible endpoint. 
-        # This completely circumvents the buggy langchain_google_genai library versioning.
-        return ChatOpenAI(
-            api_key=os.getenv("GOOGLE_API_KEY"),
-            base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
-            model="gemini-1.5-flash"
-        )
+        # Gemini 1.5 is deprecated. Using the modern 2.5 / 2.0 models.
+        try:
+            return ChatGoogleGenerativeAI(model="gemini-2.5-flash", convert_system_message_to_human=True)
+        except Exception:
+            return ChatGoogleGenerativeAI(model="gemini-2.0-flash", convert_system_message_to_human=True)
 
     elif os.getenv("OPENAI_API_KEY"):
         return ChatOpenAI(model="gpt-3.5-turbo")
