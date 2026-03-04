@@ -5,113 +5,138 @@ from src.vector_store import add_documents_to_store, get_vector_store
 from src.rag_pipeline import build_rag_chain
 from langchain_core.messages import HumanMessage, AIMessage
 
-st.set_page_config(page_title="Personal Research AI", layout="wide", page_icon="✨")
+st.set_page_config(page_title="Nexus", layout="wide")
 
-# --- Custom Premium CSS ---
+# --- Custom Minimalist CSS ---
 st.markdown("""
 <style>
-    /* Main background */
+    /* Minimalist typography & background */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+    
     .stApp {
-        background: radial-gradient(circle at top left, #1e2030, #0f111a);
-        color: #e2e8f0;
+        background-color: #fafafa;
+        color: #1a1a1a;
         font-family: 'Inter', sans-serif;
     }
     
-    /* Headers */
+    /* Clean Headers */
     h1, h2, h3 {
-        color: #ffffff;
-        font-weight: 700 !important;
-        letter-spacing: -0.02em;
+        color: #111111;
+        font-weight: 500 !important;
+        letter-spacing: -0.01em;
     }
     h1 {
-        background: linear-gradient(90deg, #d8b4fe, #818cf8);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin-bottom: 0.5rem;
+        font-size: 2.5rem;
+        margin-bottom: 0.2rem;
     }
     
-    /* Top bar fix */
-    header {
-        background: transparent !important;
+    /* Hide default Streamlit elements */
+    header { visibility: hidden; }
+    #MainMenu { visibility: hidden; }
+    footer { visibility: hidden; }
+    
+    /* Sleek Sidebar */
+    .css-1544g2n, [data-testid="stSidebar"] {
+        background-color: #ffffff;
+        border-right: 1px solid #eaeaea;
     }
     
-    /* Sidebar */
-    .css-1544g2n {
-        background: rgba(20, 24, 39, 0.7);
-        backdrop-filter: blur(12px);
-        border-right: 1px solid rgba(255,255,255,0.05);
+    hr {
+        border-top: 1px solid #eaeaea;
+        margin: 2rem 0;
     }
     
-    /* Buttons */
+    /* Monochrome Buttons */
     .stButton>button {
-        background: linear-gradient(135deg, #6366f1, #8b5cf6);
-        color: white;
-        border: none;
-        border-radius: 8px;
+        background-color: #ffffff;
+        color: #111111;
+        border: 1px solid #d4d4d4;
+        border-radius: 4px;
         padding: 0.5rem 1rem;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 14px 0 rgba(139, 92, 246, 0.39);
+        font-weight: 400;
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
+        box-shadow: none;
     }
     .stButton>button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
+        border-color: #111111;
+        color: #111111;
+        background-color: #f5f5f5;
+    }
+    .stButton>button:active {
+        background-color: #e5e5e5;
     }
     
-    /* Inputs */
-    .stTextInput>div>div>input, .stSelectbox>div>div>select {
-        background-color: rgba(30, 41, 59, 0.7) !important;
-        border: 1px solid rgba(255,255,255,0.1) !important;
-        border-radius: 8px !important;
-        color: white !important;
+    /* Clean Inputs */
+    .stTextInput>div>div>input, .stSelectbox>div>div>select, [data-testid="stFileUploader"] {
+        background-color: #ffffff !important;
+        border: 1px solid #e0e0e0 !important;
+        border-radius: 4px !important;
+        color: #111111 !important;
         box-shadow: none !important;
+        font-size: 0.95rem;
     }
-    .stTextInput>div>div>input:focus {
-        border-color: #8b5cf6 !important;
-        box-shadow: 0 0 0 1px #8b5cf6 !important;
+    .stTextInput>div>div>input:focus, .stSelectbox>div>div>select:focus {
+        border-color: #111111 !important;
     }
     
-    /* Chat bubbles */
+    /* Refined Chat Bubbles */
     .stChatMessage {
-        background-color: rgba(30, 41, 59, 0.4);
-        border: 1px solid rgba(255,255,255,0.05);
-        border-radius: 12px;
-        padding: 1rem;
+        background-color: #ffffff;
+        border: 1px solid #eaeaea;
+        border-radius: 6px;
+        padding: 1.25rem;
         margin-bottom: 1rem;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.02);
     }
-    /* User message specific styling */
+    
+    /* User message subtle differentiation */
     .stChatMessage[data-testid="chat-message-user"] {
-        background-color: rgba(99, 102, 241, 0.1);
-        border: 1px solid rgba(99, 102, 241, 0.2);
+        background-color: #fcfcfc;
+        border-left: 2px solid #a3a3a3;
+    }
+    
+    /* Assistant message differentiation */
+    .stChatMessage[data-testid="chat-message-assistant"] {
+        border-left: 2px solid #111111;
     }
     
     /* Chat input area */
     .stChatInputContainer {
-        border-radius: 12px !important;
-        border: 1px solid rgba(255,255,255,0.1) !important;
-        background-color: rgba(30, 41, 59, 0.9) !important;
-        backdrop-filter: blur(10px);
+        border-radius: 6px !important;
+        border: 1px solid #d4d4d4 !important;
+        background-color: #ffffff !important;
+        box-shadow: 0 -4px 20px rgba(0,0,0,0.02) !important;
     }
     
-    /* Expanders */
+    /* Clean Expanders */
     .streamlit-expanderHeader {
-        background-color: rgba(30, 41, 59, 0.5) !important;
-        border-radius: 8px;
+        background-color: #f9f9f9 !important;
+        border-radius: 4px;
+        font-weight: 500;
+        color: #333;
     }
     div[data-testid="stExpander"] {
-        border: 1px solid rgba(255,255,255,0.05);
-        border-radius: 8px;
-        background-color: rgba(15, 23, 42, 0.3);
+        border: 1px solid #ebebeb;
+        border-radius: 4px;
+        background-color: #ffffff;
+    }
+    
+    /* Subtle text */
+    .stMarkdown p {
+        color: #404040;
     }
 </style>
 """, unsafe_allow_html=True)
 
-st.title("✨ Nexus AI Research Assistant")
-st.markdown("<p style='color: #94a3b8; font-size: 1.1rem;'>Upload documents, discover insights, and synthesize knowledge effortlessly.</p>", unsafe_allow_html=True)
-st.markdown("---")
+st.title("Nexus")
+st.markdown("<p style='color: #666666; font-size: 1.05rem; font-weight: 300; margin-bottom: 2rem;'>Document analysis and synthesis.</p>", unsafe_allow_html=True)
+
 # --- Sidebar Configuration ---
 with st.sidebar:
-    st.header("⚙️ Configuration")
+    st.header("Configuration")
     try:
         import langchain_google_genai
         st.caption(f"SDK Version: {langchain_google_genai.__version__}")
@@ -136,7 +161,7 @@ with st.sidebar:
             os.environ["ANTHROPIC_API_KEY"] = api_key
             
     # --- Diagnostics ---
-    if st.button("🛠️ Run API Diagnostics"):
+    if st.button("Run API Diagnostics"):
         if not api_key:
             st.error("Please enter your API Key first.")
         elif llm_provider == "Google Gemini":
@@ -153,7 +178,7 @@ with st.sidebar:
             except Exception as e:
                 st.error(f"Failed to reach Google API: {e}")
             
-    st.header("📄 Document Upload")
+    st.header("Document Upload")
     uploaded_files = st.file_uploader("Upload research PDFs", type="pdf", accept_multiple_files=True)
     
     if st.button("Process Documents"):
