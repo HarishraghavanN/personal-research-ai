@@ -60,7 +60,7 @@ streamlit run app.py
 
 ## Deployed App (Streamlit Cloud)
 
-Live at: **[https://personal-research-ai-diiururcwjx8nygkv2mur5.streamlit.app]([https://personal-research-ai.streamlit.app](https://personal-research-ai-diiururcwjx8nygkv2mur5.streamlit.app))**
+Live at: **<a href="https://personal-research-ai-diiururcwjx8nygkv2mur5.streamlit.app" target="_blank">https://personal-research-ai-diiururcwjx8nygkv2mur5.streamlit.app</a>**
 
 To use: paste your Google Gemini API key in the sidebar → upload a PDF → click Process Documents → start asking questions!
 
