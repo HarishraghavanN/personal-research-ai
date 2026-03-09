@@ -4,6 +4,17 @@ A Retrieval-Augmented Generation (RAG) powered research assistant that lets you 
 
 ---
 
+## 🎯 Problem Statement
+
+In an era of information overload, extracting specific, relevant information from lengthy documents and research papers is time-consuming and prone to human error. Nexus AI solves this by allowing users to converse directly with their documents, instantly retrieving exact information with precise source citations.
+
+## 🌐 Domain
+
+**Artificial Intelligence / Natural Language Processing (NLP)**
+Specifically, this project applies **Retrieval-Augmented Generation (RAG)** within the domain of document analysis, knowledge extraction, and intelligent information retrieval.
+
+---
+
 ## Features
 
 - **PDF Ingestion** — Upload multiple research papers and documents
@@ -66,7 +77,14 @@ To use: paste your Google Gemini API key in the sidebar → upload a PDF → cli
 
 ---
 
-## Tech Stack
+## 🤖 Models Used
+
+- **Primary Language Model (LLM)**: Google Gemini 2.5 Flash *(used for context-aware generation and conversational responses)*
+- **Embedding Model**: HuggingFace `all-MiniLM-L6-v2` *(used for semantic search and converting document chunks into vectors)*
+
+---
+
+## 💻 Tech Stack
 
 | Component | Technology |
 |---|---|
@@ -86,3 +104,13 @@ To use: paste your Google Gemini API key in the sidebar → upload a PDF → cli
 3. **Store** — Vectors are stored in a local ChromaDB vector database
 4. **Retrieve** — At query time, the top-k most semantically similar chunks are retrieved
 5. **Generate** — Gemini reads the retrieved context and chat history to generate a cited answer
+
+---
+
+## 📸 Output / Screenshots
+
+![Summary Output](./images/summary_output.png)  
+*Figure 1: Generating a summary from an uploaded research paper*
+
+![Q&A Output](./images/qa_output.png)  
+*Figure 2: Asking specific questions and receiving cited answers based on the document*
